@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "audit": "yarn npm audit --severity high",
+    "ci:install": "yarn install --immutable --check-cache",
+    "ci:verify": "yarn npm audit --severity high && yarn dedupe --check"
   },
   "dependencies": {
     "react": "^19.2.0",

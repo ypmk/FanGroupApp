@@ -1,0 +1,11 @@
+FROM node:20
+
+WORKDIR /app
+
+COPY package.json yarn.lock .yarnrc.yml ./
+COPY .yarn/ .yarn/
+RUN corepack enable
+RUN yarn install
+
+# остальной код при dev-запуске придёт через volume
+CMD ["yarn", "dev", "--host", "0.0.0.0", "--port", "5173"]

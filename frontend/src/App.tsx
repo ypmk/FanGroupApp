@@ -1,35 +1,44 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from 'react';
+import { API_URL } from './config';
 
 function App() {
-  const [count, setCount] = useState(0)
+    const [message, setMessage] = useState('Запрос ещё не отправлен...');
+    const [status, setStatus] = useState<'loading' | 'ok' | 'error' | 'idle'>('idle');
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    useEffect(() => {
+        setStatus('loading');
+        fetch(`${API_URL}/api/hello`)
+            .then((res) => res.text())
+            .then((text) => {
+                setMessage(text);
+                setStatus('ok');
+            })
+            .catch((err) => {
+                console.error(err);
+                setMessage('Ошибка: ' + err.message);
+                setStatus('error');
+            });
+    }, []);
+
+    return (
+        <div
+            style={{
+                minHeight: '100vh',
+                background: '#111',
+                color: '#0f0',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontFamily: 'system-ui, sans-serif',
+            }}
+        >
+            <h1>Frontend + Backend + Postgres (Docker)</h1>
+            <p>Ответ от backend:</p>
+            <pre style={{ fontSize: '1.5rem' }}>{message}</pre>
+            <p>Статус: {status}</p>
+        </div>
+    );
 }
 
-export default App
+export default App;

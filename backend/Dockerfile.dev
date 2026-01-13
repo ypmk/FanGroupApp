@@ -1,0 +1,14 @@
+FROM maven:3.9.6-eclipse-temurin-17
+
+WORKDIR /app
+
+# сначала pom.xml, чтобы закэшировать зависимости
+COPY pom.xml .
+RUN mvn -q -e -B dependency:go-offline
+
+# исходники копировать не обязательно, их перекроет volume,
+# но пусть будет дефолтная копия
+COPY src ./src
+
+# Spring Boot dev-mode
+CMD ["mvn", "spring-boot:run"]
