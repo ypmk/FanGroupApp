@@ -9,7 +9,6 @@ export default function App() {
         <BrowserRouter>
             <div className="min-h-screen bg-zinc-950 text-white">
                 <Navbar />
-
                 <Routes>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/merch" element={<MerchPage />} />
