@@ -16,6 +16,16 @@ spring:
     enabled: true
     locations: classpath:db/migration
 
+app:
+  jwt:
+    secret: ${APP_JWT_SECRET}
+    accessTokenMinutes: 60
+  admin:
+    username: admin
+    password: admin123
+
+
+
 management:
   endpoints:
     web:
