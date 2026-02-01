@@ -97,3 +97,24 @@ export async function register(username: string, password: string): Promise<void
         body: JSON.stringify({ username, password }),
     });
 }
+
+
+export type AdminUser = {
+    id: number;
+    username: string;
+    enabled: boolean;
+    roles: string[];
+};
+
+export async function adminGetUsers(): Promise<AdminUser[]> {
+    return adminRequest("/api/admin/users", { method: "GET" });
+}
+
+export async function adminGrantAdmin(userId: number): Promise<AdminUser> {
+    return adminRequest(`/api/admin/users/${userId}/grant-admin`, { method: "POST" });
+}
+
+export async function adminRevokeAdmin(userId: number): Promise<AdminUser> {
+    return adminRequest(`/api/admin/users/${userId}/revoke-admin`, { method: "POST" });
+}
+

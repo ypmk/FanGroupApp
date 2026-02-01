@@ -14,21 +14,21 @@ export default function UserAuthModal({ open, onClose }: { open: boolean; onClos
     function getAuthError(e: unknown, mode: "login" | "register") {
         if (e instanceof ApiError) {
             if (mode === "register") {
-                if (e.status === 409) return "Пользователь с таким логином уже существует.";
-                if (e.status === 400) return "Проверьте логин и пароль: логин от 3 символов, пароль от 6.";
-                if (e.status >= 500) return "Ошибка сервера. Попробуйте позже.";
-                return "Не удалось зарегистрироваться. Попробуйте ещё раз.";
+                if (e.status === 409) return "Пользователь с таким логином уже существует";
+                if (e.status === 400) return "Проверьте логин и пароль: логин от 3 символов, пароль от 6";
+                if (e.status >= 500) return "Ошибка сервера. Попробуйте позже";
+                return "Не удалось зарегистрироваться. Попробуйте ещё раз";
             }
 
             if (mode === "login") {
-                if (e.status === 401) return "Неверный логин или пароль.";
-                if (e.status === 403) return "Нет доступа.";
-                if (e.status >= 500) return "Ошибка сервера. Попробуйте позже.";
-                return "Не удалось войти. Проверьте данные.";
+                if (e.status === 401) return "Неверный логин или пароль";
+                if (e.status === 403) return "Нет доступа";
+                if (e.status >= 500) return "Ошибка сервера. Попробуйте позже";
+                return "Не удалось войти. Проверьте данные";
             }
         }
 
-        return "Произошла ошибка. Попробуйте ещё раз.";
+        return "Произошла ошибка. Попробуйте ещё раз";
     }
 
     async function onSubmit(e: React.FormEvent) {
@@ -70,10 +70,10 @@ export default function UserAuthModal({ open, onClose }: { open: boolean; onClos
                         </div>
                         <div className="text-sm text-white/60">
                             {isUserLoggedIn()
-                                ? "Вы уже вошли."
+                                ? "Вы уже вошли"
                                 : mode === "login"
-                                    ? "Войдите, чтобы пользоваться корзиной и избранным."
-                                    : "Создайте аккаунт, чтобы пользоваться корзиной и избранным."}
+                                    ? "Войдите, чтобы пользоваться корзиной и избранным"
+                                    : "Создайте аккаунт, чтобы пользоваться корзиной и избранным"}
                         </div>
                     </div>
 
@@ -123,7 +123,7 @@ export default function UserAuthModal({ open, onClose }: { open: boolean; onClos
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Введите пароль (мин 6)"
+                                placeholder="Введите пароль"
                             />
                         </div>
 
