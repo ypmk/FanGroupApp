@@ -18,7 +18,7 @@ export default function AdminLoginPage() {
         try {
             const token = await login(username, password);
             setAdminToken(token);
-            navigate("/admin/merch", { replace: true });
+            navigate("/admin", { replace: true });
         } catch (e: any) {
             setErr(e.message ?? "Login failed");
         } finally {

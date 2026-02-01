@@ -7,6 +7,9 @@ import AdminMerchPage from "./pages/AdminMerchPage.tsx";
 import PublicLayout from "./layouts/PublicLayout.tsx";
 import AdminLayout from "./layouts/AdminLayout.tsx";
 import AdminProtectedRoute from "./components/AdminProtectedRoute.tsx";
+import AdminDashboardPage from "./pages/AdminDashboardPage.tsx";
+import AdminStudioPage from "./pages/AdminStudioPage.tsx";
+import AdminUsersPage from "./pages/AdminUsersPage.tsx";
 
 export default function App() {
     return (
@@ -19,12 +22,15 @@ export default function App() {
                         <Route path="/studio" element={<StudioPage />} />
                     </Route>
 
-                    <Route element={<AdminLayout />}>
-                        <Route path="/admin/login" element={<AdminLoginPage />} />
-                        <Route path="/admin/merch" element={
-                            <AdminProtectedRoute><AdminMerchPage /></AdminProtectedRoute>
-                        } />
+                    <Route element={<AdminProtectedRoute><AdminLayout /></AdminProtectedRoute>}>
+                        <Route path="/admin" element={<AdminDashboardPage />} />
+                        <Route path="/admin/merch" element={<AdminMerchPage />} />
+                        <Route path="/admin/studio" element={<AdminStudioPage />} />
+                        <Route path="/admin/users" element={<AdminUsersPage></AdminUsersPage>} />
                     </Route>
+
+                    <Route path="/admin/login" element={<AdminLoginPage />} />
+
                 </Routes>
             </div>
         </BrowserRouter>
