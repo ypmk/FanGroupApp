@@ -6,6 +6,8 @@ import {
     adminGetMerch,
     adminUpdateMerch,
 } from "../api.ts";
+import ConfirmModal from "../components/ConfirmModal.tsx";
+
 
 type FormState = {
     title: string;
@@ -69,6 +71,11 @@ export default function AdminMerchPage() {
     const [editId, setEditId] = useState<number | null>(null);
     const [editForm, setEditForm] = useState<FormState>(emptyForm);
 
+    const [deleteOpen, setDeleteOpen] = useState(false);
+    const [deleteItem, setDeleteItem] = useState<MerchItem | null>(null);
+    const [deleteLoading, setDeleteLoading] = useState(false);
+
+
     async function load() {
         setErr(null);
         setLoading(true);
@@ -130,18 +137,28 @@ export default function AdminMerchPage() {
         }
     }
 
-    async function remove(item: MerchItem) {
-        const ok = confirm(`Удалить "${item.title}"?`);
-        if (!ok) return;
+    function askDelete(item: MerchItem) {
+        setDeleteItem(item);
+        setDeleteOpen(true);
+    }
+
+    async function confirmDelete() {
+        if (!deleteItem) return;
 
         setErr(null);
+        setDeleteLoading(true);
         try {
-            await adminDeleteMerch(item.id);
-            setItems((prev) => prev.filter((x) => x.id !== item.id));
+            await adminDeleteMerch(deleteItem.id);
+            setItems((prev) => prev.filter((x) => x.id !== deleteItem.id));
+            setDeleteOpen(false);
+            setDeleteItem(null);
         } catch (e: any) {
             setErr(e.message ?? "Не удалось удалить");
+        } finally {
+            setDeleteLoading(false);
         }
     }
+
 
     return (
         <div className="space-y-6">
@@ -213,7 +230,7 @@ export default function AdminMerchPage() {
                                 </button>
 
                                 <button
-                                    onClick={() => remove(x)}
+                                    onClick={() => askDelete(x)}
                                     className="rounded-xl border border-red-500/20 bg-red-500/10 px-3 py-2 text-sm text-red-200 hover:bg-red-500/15"
                                 >
                                     Удалить
@@ -341,6 +358,24 @@ export default function AdminMerchPage() {
                     </div>
                 </form>
             </Modal>
+
+
+            <ConfirmModal
+                open={deleteOpen}
+                title="Удаление товара"
+                message={deleteItem ? `Удалить "${deleteItem.title}"? Это действие нельзя отменить` : "Удалить товар?"}
+                confirmText="Удалить"
+                cancelText="Отмена"
+                danger
+                loading={deleteLoading}
+                onClose={() => {
+                    if (deleteLoading) return;
+                    setDeleteOpen(false);
+                    setDeleteItem(null);
+                }}
+                onConfirm={confirmDelete}
+            />
+
         </div>
     );
 }
