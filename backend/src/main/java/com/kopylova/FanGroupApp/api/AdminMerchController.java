@@ -4,6 +4,8 @@ import com.kopylova.FanGroupApp.domain.MerchItem;
 import com.kopylova.FanGroupApp.repo.MerchItemRepository;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/admin/merch")
 public class AdminMerchController {
@@ -12,6 +14,11 @@ public class AdminMerchController {
 
     public AdminMerchController(MerchItemRepository repo) {
         this.repo = repo;
+    }
+
+    @GetMapping
+    public List<MerchItem> list() {
+        return repo.findAll();
     }
 
     @PostMapping
@@ -37,4 +44,5 @@ public class AdminMerchController {
     public void delete(@PathVariable Long id) {
         repo.deleteById(id);
     }
+
 }

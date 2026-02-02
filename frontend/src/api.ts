@@ -118,3 +118,32 @@ export async function adminRevokeAdmin(userId: number): Promise<AdminUser> {
     return adminRequest(`/api/admin/users/${userId}/revoke-admin`, { method: "POST" });
 }
 
+export type MerchItem = {
+    id: number;
+    title: string;
+    description: string;
+    price: number;
+    imageUrl: string;
+};
+
+export async function adminGetMerch(): Promise<MerchItem[]> {
+    return adminRequest("/api/admin/merch", { method: "GET" });
+}
+
+export async function adminCreateMerch(item: Omit<MerchItem, "id">): Promise<MerchItem> {
+    return adminRequest("/api/admin/merch", {
+        method: "POST",
+        body: JSON.stringify(item),
+    });
+}
+
+export async function adminUpdateMerch(id: number, item: Omit<MerchItem, "id">): Promise<MerchItem> {
+    return adminRequest(`/api/admin/merch/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(item),
+    });
+}
+
+export async function adminDeleteMerch(id: number): Promise<void> {
+    await adminRequest(`/api/admin/merch/${id}`, { method: "DELETE" });
+}
