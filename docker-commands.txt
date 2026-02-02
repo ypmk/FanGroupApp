@@ -1,0 +1,12 @@
+// dev-версия:
+// docker compose -f docker-compose.dev.yml up -d --build
+// docker compose down
+//
+//
+// прод-версия:
+// (-d чтобы запустить и видеть вносимые во фронт изменения)
+// docker compose up --build -d
+//(-v чтобы удалить с томом)
+// docker compose down -v
+//
+//docker compose build --no-cache
