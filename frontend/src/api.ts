@@ -1,4 +1,4 @@
-import { getAdminToken } from "./auth";
+import {clearAdminToken, getAdminToken} from "./auth";
 
 const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8080";
 
@@ -54,6 +54,12 @@ export async function login(username: string, password: string): Promise<string>
 }
 
 
+function redirectToAdminLogin() {
+    const next = encodeURIComponent(window.location.pathname + window.location.search);
+    window.location.href = `/admin/login?next=${next}`;
+}
+
+
 async function adminRequest(path: string, options: RequestInit = {}) {
     const token = getAdminToken();
 
@@ -67,15 +73,22 @@ async function adminRequest(path: string, options: RequestInit = {}) {
     });
 
     if (!res.ok) {
+        if (res.status === 401 || res.status === 403) {
+            clearAdminToken();
+            redirectToAdminLogin();
+        }
+
         const text = await res.text().catch(() => "");
         throw new Error(`${res.status} ${res.statusText} ${text}`);
     }
+
 
     const ct = res.headers.get("content-type") ?? "";
     if (!ct.includes("application/json")) return null;
 
     return res.json();
 }
+
 
 
 export async function createMerch(item: {
