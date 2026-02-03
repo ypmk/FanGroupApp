@@ -10,6 +10,7 @@ import AdminProtectedRoute from "./components/AdminProtectedRoute.tsx";
 import AdminDashboardPage from "./pages/AdminDashboardPage.tsx";
 import AdminStudioPage from "./pages/AdminStudioPage.tsx";
 import AdminUsersPage from "./pages/AdminUsersPage.tsx";
+import CartPage from "./pages/CartPage.tsx";
 
 export default function App() {
     return (
@@ -20,6 +21,7 @@ export default function App() {
                         <Route path="/" element={<HomePage />} />
                         <Route path="/merch" element={<MerchPage />} />
                         <Route path="/studio" element={<StudioPage />} />
+                        <Route path="/cart" element={<CartPage />} />
                     </Route>
 
                     <Route element={<AdminProtectedRoute><AdminLayout /></AdminProtectedRoute>}>

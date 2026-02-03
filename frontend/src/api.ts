@@ -1,4 +1,4 @@
-import {clearAdminToken, getAdminToken} from "./auth";
+import {clearAdminToken, getAdminToken, getUserToken, clearUserToken} from "./auth";
 
 const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8080";
 
@@ -9,6 +9,14 @@ export class ApiError extends Error {
         super(message);
         this.status = status;
         this.body = body;
+    }
+}
+
+export class AuthRequiredError extends Error {
+    status: number;
+    constructor(status: number = 401, message: string = "Auth required") {
+        super(message);
+        this.status = status;
     }
 }
 
@@ -91,6 +99,37 @@ async function adminRequest(path: string, options: RequestInit = {}) {
 
 
 
+async function userRequest(path: string, options: RequestInit = {}) {
+    const token = getUserToken();
+
+    const res = await fetch(`${API_BASE}${path}`, {
+        ...options,
+        headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            ...(options.headers as Record<string, string> | undefined),
+        },
+    });
+
+    if (!res.ok) {
+        if (res.status === 401 || res.status === 403) {
+            clearUserToken();
+            throw new AuthRequiredError(res.status);
+        }
+
+        const text = await res.text().catch(() => "");
+        throw new Error(`${res.status} ${res.statusText} ${text}`);
+    }
+
+    const ct = res.headers.get("content-type") ?? "";
+    if (!ct.includes("application/json")) return null;
+    return res.json();
+}
+
+
+
+
+
 export async function createMerch(item: {
     title: string;
     description: string;
@@ -160,3 +199,36 @@ export async function adminUpdateMerch(id: number, item: Omit<MerchItem, "id">):
 export async function adminDeleteMerch(id: number): Promise<void> {
     await adminRequest(`/api/admin/merch/${id}`, { method: "DELETE" });
 }
+
+export type CartItem = {
+    merchId: number;
+    title: string;
+    description: string | null;
+    price: number;
+    imageUrl: string | null;
+    qty: number;
+};
+
+export async function getCart(): Promise<CartItem[]> {
+    return userRequest("/api/cart", { method: "GET" });
+}
+
+export async function addToCart(merchId: number): Promise<void> {
+    await userRequest(`/api/cart/items/${merchId}`, { method: "POST" });
+}
+
+export async function setCartQty(merchId: number, qty: number): Promise<void> {
+    await userRequest(`/api/cart/items/${merchId}`, {
+        method: "PUT",
+        body: JSON.stringify({ qty }),
+    });
+}
+
+export async function removeFromCart(merchId: number): Promise<void> {
+    await userRequest(`/api/cart/items/${merchId}`, { method: "DELETE" });
+}
+
+export async function clearCart(): Promise<void> {
+    await userRequest("/api/cart", { method: "DELETE" });
+}
+
